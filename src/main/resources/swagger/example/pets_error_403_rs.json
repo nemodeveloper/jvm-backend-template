@@ -1,0 +1,13 @@
+{
+  "status": {
+    "code": "403",
+    "description": "FORBIDDEN"
+  },
+  "errors": [
+    {
+      "key": "key",
+      "code": "403",
+      "description": "Описание"
+    }
+  ]
+}

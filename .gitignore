@@ -1,0 +1,9 @@
+.idea
+.gradle
+build/
+out/
+*.iml
+
+gradle.properties
+/dev/docker/grafana/grafana.db
+/dev/docker/grafana/alerting

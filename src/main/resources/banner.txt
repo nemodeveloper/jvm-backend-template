@@ -1,0 +1,16 @@
+     ___   ____    __    ____  _______     _______.  ______   .___  ___.  _______    .___________. _______ .___  ___. .______    __          ___   .___________. _______
+    /   \  \   \  /  \  /   / |   ____|   /       | /  __  \  |   \/   | |   ____|   |           ||   ____||   \/   | |   _  \  |  |        /   \  |           ||   ____|
+   /  ^  \  \   \/    \/   /  |  |__     |   (----`|  |  |  | |  \  /  | |  |__      `---|  |----`|  |__   |  \  /  | |  |_)  | |  |       /  ^  \ `---|  |----`|  |__
+  /  /_\  \  \            /   |   __|     \   \    |  |  |  | |  |\/|  | |   __|         |  |     |   __|  |  |\/|  | |   ___/  |  |      /  /_\  \    |  |     |   __|
+ /  _____  \  \    /\    /    |  |____.----)   |   |  `--'  | |  |  |  | |  |____        |  |     |  |____ |  |  |  | |  |      |  `----./  _____  \   |  |     |  |____
+/__/     \__\  \__/  \__/     |_______|_______/     \______/  |__|  |__| |_______|       |__|     |_______||__|  |__| | _|      |_______/__/     \__\  |__|     |_______|
+
+Application name: ${spring.application.name}
+Powered by Spring Boot: ${spring-boot.version}
+Developed by: ${spring.application.developed-by}
+
+Build Info:
+platform.sdk.version: ${platform.core.build-info.platform-sdk-version:unknown}
+git.branch: ${git.branch:unknown}
+git.commit.id: ${git.commit.id:unknown}
+git.remote.origin.url: ${git.remote.origin.url:unknown}

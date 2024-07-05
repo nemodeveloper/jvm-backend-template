@@ -1,0 +1,9 @@
+wet-clinic:
+  integration:
+    kafka:
+      broker:
+        properties:
+          sasl.mechanism: "SCRAM-SHA-512"
+          sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="${KAFKA_USERNAME:admin}" password="${KAFKA_PASSWORD:admin}";
+        security:
+          protocol: "SASL_PLAINTEXT"

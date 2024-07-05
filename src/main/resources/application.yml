@@ -1,0 +1,98 @@
+# Часть настроек платформенные библиотеки задают по умолчанию
+# Более подробно смотри в README.md библиотек https://github.com/nemodeveloper/jvm-backend-platform/tree/main
+spring:
+  application:
+    name: awesome-template
+    developed-by: Nemodev
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+  datasource:
+    url: jdbc:postgresql://${DATABASE_URL:localhost:5432}/${DATABASE_NAME:awesome_template}
+    username: ${DATABASE_USERNAME:awesome_template_admin}
+    password: ${DATABASE_PASSWORD:awesome_template_admin}
+
+# Настройки сервиса
+awesome-template:
+  test: test
+
+# Настройки платформенных библиотек
+platform:
+  integration:
+    s3-minio:
+      access-key: ${S3_MINIO_ACCESS_KEY:admin}
+      secret-key: ${S3_MINIO_SECRET_KEY:admin1234}
+      bucket: ${S3_MINIO_BUCKET:awesome-template}
+      file-content-type: ${S3_MINIO_FILE_CONTENT_TYPE:application/jpeg}
+      http-client:
+        url: ${S3_MINIO_URL:http://127.0.0.1:9000}
+  security:
+    api-key:
+      enabled: true
+      key: ${AWESOME_TEMPLATE_API_KEY:55298707-117c-44a5-8434-162fb9d2e4c5}
+      auth-paths:
+        - path: "/v1/pets"
+
+# Настройки внешнего сервиса
+wet-clinic:
+  integration:
+    http-client: # Полный список настроек смотри в библиотеке core-integration-http
+      service-id: wet-clinic
+      url: ${WET_CLINIC_URL:http://localhost:8083/wet-clinic}
+      timeout:
+        connection: 1000ms
+        read: 3000ms
+        write: 3000ms
+      logging-enabled: true
+      observation-enabled: true
+      retry: # Настройка retry при необходимости
+        enabled: true
+    kafka:
+      producers:
+        "[wet-clinic.pets.registrations]":
+          enabled: true
+          topic: ${KAFKA_WET_CLINIC_PET_REGISTRATION_TOPIC:wet-clinic.pets.registrations.v1}
+          # Опциональные настройки и их значения по умолчанию
+          logging-enabled: true
+          logging-pretty-enabled: true
+          metrics-enabled: true
+          tracing-enabled: true
+      consumers:
+        "[wet-clinic.pets.registrations]":
+          enabled: true
+          topic: ${KAFKA_WET_CLINIC_PET_REGISTRATION_TOPIC:wet-clinic.pets.registrations.v1}
+          # Опциональные настройки и их значения по умолчанию
+          logging-enabled: true
+          logging-pretty-enabled: true
+          metrics-enabled: true
+          tracing-enabled: true
+          kafka-extended:
+            auto-commit-batch-size: 10
+            max-poll-timeout: 500ms
+      broker: # Базовые настройки Kafka на основе Spring KafkaProperties
+        bootstrap-servers: ${KAFKA_URLS:localhost:9092}
+        producer: # Опциональные настройки и их значения по умолчанию
+          acks: all
+          retries: 3
+        consumer: # Обязательные настройки
+          group-id: ${KAFKA_CONSUMER_GROUP_ID:awesome-template.local}
+          enable-auto-commit: false
+
+springdoc:
+  open-api:
+    info:
+      title: Пример Open-Api
+      description: Api питомцев
+  group-configs:
+    - group: client
+      display-name: Client API
+      paths-to-match:
+        - "/**/**"
+      paths-to-exclude:
+        - "/admin/**"
+#      Пример конфигурации нескольких групп api
+#    - group: admin
+#      display-name: Admin API
+#      paths-to-match:
+#        - "/admin/**"

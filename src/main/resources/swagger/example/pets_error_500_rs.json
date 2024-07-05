@@ -1,0 +1,13 @@
+{
+  "status": {
+    "code": "500",
+    "description": "INTERNAL_SERVER_ERROR"
+  },
+  "errors": [
+    {
+      "key": "key",
+      "code": "500",
+      "description": "Описание"
+    }
+  ]
+}

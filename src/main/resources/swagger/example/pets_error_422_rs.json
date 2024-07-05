@@ -1,0 +1,13 @@
+{
+  "status": {
+    "code": "422",
+    "description": "UNPROCESSABLE_CONTENT"
+  },
+  "errors": [
+    {
+      "key": "key",
+      "code": "422",
+      "description": "Описание"
+    }
+  ]
+}

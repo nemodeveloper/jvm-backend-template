@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/wet-clinic/v1/pet-registrations"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "wet-clinic-pet-registration.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}
