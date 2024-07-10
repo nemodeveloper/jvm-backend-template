@@ -4,18 +4,18 @@ import io.github.springwolf.addons.generic_binding.annotation.AsyncGenericOperat
 import io.github.springwolf.core.asyncapi.annotations.AsyncListener
 import io.github.springwolf.core.asyncapi.annotations.AsyncOperation
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
-import ru.nemodev.platform.core.integration.kafka.consumer.KafkaMessageProcessor
 import ru.nemodev.platform.core.integration.kafka.deserializer.DeserializeResult
 import ru.nemodev.platform.core.logging.sl4j.Loggable
 import ru.nemodev.template.integration.wetclinic.dto.PetRegistrationDtoRq
+import ru.nemodev.template.service.PetService
 
 @Component
 class WetClinicKafkaMessageProcessor(
-    private val petService: ru.nemodev.template.service.PetService
-) : KafkaMessageProcessor<PetRegistrationDtoRq> {
-
+    private val petService: PetService
+) {
     companion object : Loggable
 
     @AsyncGenericOperationBinding(
@@ -33,7 +33,10 @@ class WetClinicKafkaMessageProcessor(
             payloadType = PetRegistrationDtoRq::class
         )
     )
-    override fun process(@Payload message: ConsumerRecord<String, DeserializeResult<PetRegistrationDtoRq>>) {
+    @KafkaListener(
+        containerFactory = "wetClinicConcurrentKafkaListenerContainerFactory"
+    )
+    fun process(@Payload message: ConsumerRecord<String, DeserializeResult<PetRegistrationDtoRq>>) {
         when(val petData = message.value()) {
             is DeserializeResult.Success -> {
                 val petRegistration = petData.data

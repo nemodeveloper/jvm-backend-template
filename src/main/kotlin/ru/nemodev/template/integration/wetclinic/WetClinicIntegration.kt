@@ -9,7 +9,7 @@ import org.springframework.web.client.RestClient
 import ru.nemodev.platform.core.exception.critical.IntegrationCriticalException
 import ru.nemodev.platform.core.exception.error.ErrorCode
 import ru.nemodev.platform.core.exception.logic.IntegrationLogicException
-import ru.nemodev.platform.core.integration.kafka.producer.SmartKafkaProducer
+import ru.nemodev.platform.core.integration.kafka.producer.PlatformKafkaProducer
 import ru.nemodev.template.config.integration.WetClinicProperties
 import ru.nemodev.template.entity.PetEntity
 import ru.nemodev.template.integration.wetclinic.converter.toPetRegistrationDtoRq
@@ -36,7 +36,7 @@ interface WetClinicIntegration {
 class WetClinicIntegrationImpl(
     wetClinicProperties: WetClinicProperties,
     private val wetClinicRestClient: RestClient,
-    private val wetClinicSmartProducer: SmartKafkaProducer<PetRegistrationDtoRq>
+    private val wetClinicPlatformKafkaProducer: PlatformKafkaProducer<PetRegistrationDtoRq>
 ): WetClinicIntegration {
 
     companion object {
@@ -98,7 +98,7 @@ class WetClinicIntegrationImpl(
     private fun producePetRegistrationMessage(
         key: String,
         @Payload value: PetRegistrationDtoRq
-    ) = wetClinicSmartProducer.send(key, value)
+    ) = wetClinicPlatformKafkaProducer.send(key, value)
 
     /**
      * Пример правильной передачи:

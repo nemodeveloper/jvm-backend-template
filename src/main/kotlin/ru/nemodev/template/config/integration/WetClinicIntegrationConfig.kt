@@ -4,13 +4,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
 import ru.nemodev.platform.core.integration.http.config.RestClientProperties
 import ru.nemodev.platform.core.integration.http.factory.RestClientFactory
 import ru.nemodev.platform.core.integration.kafka.config.KafkaIntegrationProperties
-import ru.nemodev.platform.core.integration.kafka.consumer.KafkaMessageProcessor
-import ru.nemodev.platform.core.integration.kafka.consumer.SmartKafkaConsumer
-import ru.nemodev.platform.core.integration.kafka.factory.SmartKafkaFactory
-import ru.nemodev.platform.core.integration.kafka.producer.SmartKafkaProducer
+import ru.nemodev.platform.core.integration.kafka.deserializer.DeserializeResult
+import ru.nemodev.platform.core.integration.kafka.factory.PlatformKafkaFactory
+import ru.nemodev.platform.core.integration.kafka.producer.PlatformKafkaProducer
 import ru.nemodev.template.integration.wetclinic.dto.PetRegistrationDtoRq
 
 @ConfigurationProperties("wet-clinic")
@@ -39,22 +42,59 @@ class WetClinicIntegrationConfig {
     ) = restClientFactory.create(properties.integration.httpClient)
 
     @Bean
-    fun wetClinicSmartProducer(
-        smartKafkaFactory: SmartKafkaFactory,
-        properties: WetClinicProperties
-    ): SmartKafkaProducer<PetRegistrationDtoRq> =
-        smartKafkaFactory.createProducer(WET_CLINIC_PRODUCER_KEY, properties.integration.kafka)
+    fun wetClinicDefaultKafkaProducerFactory(
+        properties: WetClinicProperties,
+        platformKafkaFactory: PlatformKafkaFactory,
+    ): DefaultKafkaProducerFactory<String, PetRegistrationDtoRq> =
+        platformKafkaFactory.createDefaultKafkaProducerFactory(
+            WET_CLINIC_PRODUCER_KEY,
+            properties.integration.kafka
+        )
 
     @Bean
-    fun wetClinicSmartConsumer(
-        smartKafkaFactory: SmartKafkaFactory,
+    fun wetClinicKafkaTemplate(
         properties: WetClinicProperties,
-        wetClinicKafkaMessageProcessor: KafkaMessageProcessor<PetRegistrationDtoRq>
-    ): SmartKafkaConsumer<PetRegistrationDtoRq> =
-        smartKafkaFactory.createConsumer(
+        platformKafkaFactory: PlatformKafkaFactory,
+        wetClinicDefaultKafkaProducerFactory: DefaultKafkaProducerFactory<String, PetRegistrationDtoRq>
+    ): KafkaTemplate<String, PetRegistrationDtoRq> =
+        platformKafkaFactory.createKafkaTemplate(
+            WET_CLINIC_PRODUCER_KEY,
+            properties.integration.kafka,
+            wetClinicDefaultKafkaProducerFactory
+        )
+
+    @Bean
+    fun wetClinicPlatformKafkaProducer(
+        platformKafkaFactory: PlatformKafkaFactory,
+        properties: WetClinicProperties,
+        wetClinicKafkaTemplate: KafkaTemplate<String, PetRegistrationDtoRq>
+    ): PlatformKafkaProducer<PetRegistrationDtoRq> =
+        platformKafkaFactory.createProducer(
+            WET_CLINIC_PRODUCER_KEY,
+            properties.integration.kafka,
+            wetClinicKafkaTemplate
+        )
+
+    @Bean
+    fun wetClinicDefaultKafkaConsumerFactory(
+        properties: WetClinicProperties,
+        platformKafkaFactory: PlatformKafkaFactory
+    ): DefaultKafkaConsumerFactory<String, DeserializeResult<PetRegistrationDtoRq>> =
+        platformKafkaFactory.createDefaultKafkaConsumerFactory(
             WET_CLINIC_CONSUMER_KEY,
             properties.integration.kafka,
-            wetClinicKafkaMessageProcessor,
             PetRegistrationDtoRq::class.java
+        )
+
+    @Bean
+    fun wetClinicConcurrentKafkaListenerContainerFactory(
+        properties: WetClinicProperties,
+        platformKafkaFactory: PlatformKafkaFactory,
+        wetClinicDefaultKafkaConsumerFactory: DefaultKafkaConsumerFactory<String, DeserializeResult<PetRegistrationDtoRq>>
+    ): ConcurrentKafkaListenerContainerFactory<String, DeserializeResult<PetRegistrationDtoRq>> =
+        platformKafkaFactory.createConcurrentKafkaListenerContainerFactory(
+            WET_CLINIC_CONSUMER_KEY,
+            properties.integration.kafka,
+            wetClinicDefaultKafkaConsumerFactory
         )
 }
