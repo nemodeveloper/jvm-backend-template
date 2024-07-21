@@ -55,7 +55,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
   jaeger:
-    image: jaegertracing/all-in-one:latest
+    image: jaegertracing/opentelemetry-all-in-one:latest
     container_name: jaeger
     ports:
       - "16686:16686" # Jaeger UI

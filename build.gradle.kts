@@ -1,6 +1,6 @@
 plugins {
-    id("org.springframework.boot") version "3.3.1"
-    id("io.spring.dependency-management") version "1.1.5"
+    id("org.springframework.boot") version "3.3.2"
+    id("io.spring.dependency-management") version "1.1.6"
 
     id("com.gorylenko.gradle-git-properties") version "2.4.2"
     id("com.github.ben-manes.versions") version "0.51.0"
@@ -41,7 +41,7 @@ dependencies {
     implementation("$nemodevPlatformGroup:core-integration-kafka:$nemodevPlatformVersion")
 
     // spring
-    val springBootVersion = "3.3.1"
+    val springBootVersion = "3.3.2"
     developmentOnly("org.springframework.boot:spring-boot-docker-compose:$springBootVersion")
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
 
@@ -52,11 +52,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.3")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
-    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
     // testcontainers
-    val testContainersVersion = "1.19.8"
+    val testContainersVersion = "1.20.0"
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
     testImplementation("org.testcontainers:postgresql:$testContainersVersion")
     testImplementation("org.testcontainers:kafka:$testContainersVersion")
